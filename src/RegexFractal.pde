@@ -8,7 +8,11 @@ PImage fractal;
 String regex;
 void setup()
 {
-   size(WINDOW_SIZE, WINDOW_SIZE);
+   size(WINDOW_SIZE, WINDOW_SIZE+100);
+   fill(255,0,0);
+   rect(0,height-100,width,100);
+   fill(255,100,0);
+    rect(15,height-85,width-30,70);
    
    ident = new String[SIZE * SIZE];
    populate("", 0, 0, SIZE - 1, SIZE - 1, ident);
@@ -50,4 +54,5 @@ void matchPixels() {
   }
   fractal.updatePixels();
 }
+
 
