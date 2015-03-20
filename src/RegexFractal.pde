@@ -24,10 +24,13 @@ static void populate(String soFar, int x1, int y1, int x2, int y2, String[] idnt
   }
   else
   {
-      populate(soFar + "0", x1, y1, x2/2, y2/2, idnt);
-      populate(soFar + "1", x2/2+1, y1, x2, y2/2, idnt);
-      populate(soFar + "2", x2/2+1, y2/2+1, x2, y2, idnt);
-      populate(soFar + "3", x1, y2/2+1, x2/2, y2, idnt);  
+     populate(soFar + "0", x1, y1, x2-(1+x2-x1)/2, y2-(1+y2-y1)/2, idnt);
+     
+     populate(soFar + "1", x2-(1+x2-x1)/2+1, y1, x2, y2-(1+y2-y1)/2, idnt);
+       
+     populate(soFar + "2", x2-(1+x2-x1)/2+1, y2-(1+y2-y1)/2+1, x2, y2, idnt);
+       
+    populate(soFar + "3", x1,y2-(1+y2-y1)/2+1, x2-(1+x2-x1)/2, y2, idnt);  
   }
   
 }
