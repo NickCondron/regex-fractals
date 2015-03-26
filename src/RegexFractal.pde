@@ -20,29 +20,37 @@ void setup()
    size(WINDOW_SIZE, WINDOW_SIZE+100);
    fill(255,0,0);
    rect(0,height-100,width,100);
-   fill(255,100,0);
+   fill(0);
     rect(15,height-85,width-30,70);
-   
+    textAlign(CENTER);
+ 
    ident = new String[SIZE * SIZE];
    populate("", 0, 0, SIZE - 1, SIZE - 1, ident);
    
    fractal = new PImage(SIZE, SIZE);
    fractal.filter(INVERT);
-   regex = "0";
+   regex = "((?:13|31|20|02)+)";
    matchPixels();
-   saved="0";
+   saved="((?:13|31|20|02)+)";
+   //text(regex, width/2, height-50); 
    
 }
 
 void draw() {
   image(fractal, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
-   int indent = 25;
+  int indent = 25;
   textFont(f);
-  fill(0,255,0);
-  
-  
- text(typing,width/2-30,height-50);
-  text(saved,width/2-30,height-50);
+ 
+  fill(255, 0, 0);
+  rect(0, height - 100, width, 100);
+  fill(0);
+  rect(15, height-85, width-30, 70);
+    
+  fill(255);
+  textAlign(CENTER);
+  //text(typing, width/2-30, height-50); 
+    text(typing, width/2, height-50); 
+  text(saved, width/2-30, height-50);
 }
 
 void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
@@ -79,33 +87,32 @@ void matchPixels() {
 }
 void keyPressed() {
   
-  if (key == '\n' ) {
+  if (key == '\n' ) 
+  {
     saved = typing;
     regex=saved;
-    System.out.println(regex);
+    //println(regex);
     matchPixels();
-    
-    
-     fill(255,0,0);
-   rect(0,height-100,width,100);
-   fill(255,100,0);
-    rect(15,height-85,width-30,70);
     typing = ""; 
-   
-  }
-  else {
+  } 
+  else 
+  {
     if(key == BACKSPACE && typing.length()>0)
     {
       typing = typing.substring(0,typing.length()-1);
       
     }
     else
-      typing = typing + key; 
+    {
+      if(key != BACKSPACE&&key!=CODED)
+      {
+        if(key!=16)
+          typing = typing + key; 
+      println(key);
+      }
       saved="";
+    }
   }
    
 }
-
-
-
 
