@@ -3,9 +3,13 @@
 static final int SIZE = 512;
 static final int WINDOW_SIZE = max(SIZE, 512);
 String[] ident;
+int[] matchLength;
 
 PImage fractal;
 String regex;
+
+//1 is black/white, 2 is color intensity
+int coloringMode = 1;
 
 PFont f;
 String typing = "";
@@ -14,21 +18,20 @@ String saved = "";
 void setup()
 {
   size(WINDOW_SIZE, WINDOW_SIZE+100);
-  
-  f = createFont("Arial", 16, true);
-  textAlign(CENTER);
-  textFont(f);
  
   ident = new String[SIZE * SIZE];
+  matchLength = new int [SIZE * SIZE];
   populate("", 0, 0, SIZE - 1, SIZE - 1, ident);
    
   fractal = new PImage(SIZE, SIZE);
   fractal.filter(INVERT);
-  
   regex = "1";
-  matchPixels();
+  colorPixels(matchPixels());
+  
   saved = regex;
-   
+  f = createFont("Arial", 16, true);
+  textAlign(CENTER);
+  textFont(f);
 }
 
 void draw() {
@@ -41,7 +44,7 @@ void draw() {
     
   fill(255);
   text(typing, width/2, height-50); 
-  text(saved, width/2-30, height-50);
+  text(saved, width/2, height-50);
 }
 
 void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
@@ -61,28 +64,47 @@ void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
  
 }
 
-void matchPixels() {
-  fractal.loadPixels();
+//returns the length of the regex captures
+//-1 if no match and 0 if match and no captures
+int[] matchPixels() {
+  int[] matchLength = new int[SIZE * SIZE];
+  
   for (int i = 0; i < ident.length; i++) {
     String[] m = match(ident[i], regex);
-    if (m != null) {
-      fractal.pixels[i] = color(0);
-    }
-    else{
-      fractal.pixels[i] = color(255);
+    if (m == null) {
+      matchLength[i] = -1;
+    } else {
+      for (int j = 1; j < m.length; j++) {
+        matchLength[i] += m[j].length();
+      }
     }
   }
-  fractal.updatePixels();
   
-  
+  return matchLength;
 }
+
+void colorPixels(int[] matchLength) {
+  fractal = new PImage(SIZE, SIZE);
+  fractal.filter(INVERT);
+  
+  fractal.loadPixels();
+  for (int i = 0; i < matchLength.length; i++) {
+    if (coloringMode == 1) {
+      if (matchLength[i] >= 0) {
+        colorMode(RGB);
+        fractal.pixels[i] = color(0);
+      }
+    }
+  }
+}
+
 void keyPressed() {
   
   if (key == '\n' ) 
   {
     saved = typing;
     regex = saved;
-    matchPixels();
+    colorPixels(matchPixels());
     typing = ""; 
   } 
   else 
