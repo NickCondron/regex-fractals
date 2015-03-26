@@ -13,43 +13,34 @@ String saved = "";
 
 void setup()
 {
-   size(300,200);
-  f = createFont("Arial",16,true);
-
-
-   size(WINDOW_SIZE, WINDOW_SIZE+100);
-   fill(255,0,0);
-   rect(0,height-100,width,100);
-   fill(0);
-    rect(15,height-85,width-30,70);
-    textAlign(CENTER);
+  size(WINDOW_SIZE, WINDOW_SIZE+100);
+  
+  f = createFont("Arial", 16, true);
+  textAlign(CENTER);
+  textFont(f);
  
-   ident = new String[SIZE * SIZE];
-   populate("", 0, 0, SIZE - 1, SIZE - 1, ident);
+  ident = new String[SIZE * SIZE];
+  populate("", 0, 0, SIZE - 1, SIZE - 1, ident);
    
-   fractal = new PImage(SIZE, SIZE);
-   fractal.filter(INVERT);
-   regex = "((?:13|31|20|02)+)";
-   matchPixels();
-   saved="((?:13|31|20|02)+)";
-   //text(regex, width/2, height-50); 
+  fractal = new PImage(SIZE, SIZE);
+  fractal.filter(INVERT);
+  
+  regex = "1";
+  matchPixels();
+  saved = regex;
    
 }
 
 void draw() {
   image(fractal, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
-  int indent = 25;
-  textFont(f);
- 
+  
   fill(255, 0, 0);
   rect(0, height - 100, width, 100);
   fill(0);
   rect(15, height-85, width-30, 70);
     
   fill(255);
-  textAlign(CENTER);
-  //text(typing, width/2-30, height-50); 
-    text(typing, width/2, height-50); 
+  text(typing, width/2, height-50); 
   text(saved, width/2-30, height-50);
 }
 
@@ -78,7 +69,7 @@ void matchPixels() {
       fractal.pixels[i] = color(0);
     }
     else{
-      fractal.pixels[i]=color(255);
+      fractal.pixels[i] = color(255);
     }
   }
   fractal.updatePixels();
@@ -90,8 +81,7 @@ void keyPressed() {
   if (key == '\n' ) 
   {
     saved = typing;
-    regex=saved;
-    //println(regex);
+    regex = saved;
     matchPixels();
     typing = ""; 
   } 
@@ -104,15 +94,12 @@ void keyPressed() {
     }
     else
     {
-      if(key != BACKSPACE&&key!=CODED)
+      if(key != BACKSPACE && key != CODED)
       {
-        if(key!=16)
-          typing = typing + key; 
-      println(key);
+        typing = typing + key; 
       }
       saved="";
     }
   }
    
 }
-
