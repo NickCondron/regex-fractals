@@ -6,7 +6,7 @@ String[] ident;
 int[] matchLength;
 
 PImage fractal;
-String regex = "";
+String regex = "0";
 
 //1 is black/white, 2 is color intensity
 int coloringMode = 1;
@@ -22,9 +22,7 @@ void setup()
   ident = new String[size * size];
   matchLength = new int [size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
-   
-  fractal = new PImage(size, size);
-  fractal.filter(INVERT);
+  
   colorPixels(matchPixels());
   
   noSmooth();
@@ -97,6 +95,7 @@ void colorPixels(int[] matchLength) {
       }
     }
   }
+  fractal.updatePixels();
 }
 
 void changeDepth(boolean increase) {
@@ -105,14 +104,11 @@ void changeDepth(boolean increase) {
   } else {
     size = max(size / 2, 2);
   }
-  System.out.println("ben");
   
   ident = new String[size * size];
   matchLength = new int [size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
-   
-  fractal = new PImage(size, size);
-  fractal.filter(INVERT);
+  
   colorPixels(matchPixels());
 }
 
