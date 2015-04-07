@@ -1,12 +1,12 @@
 //Size in pixels of the fractal window
 //Must be a power of 2
-static final int SIZE = 512;
-static final int WINDOW_SIZE = max(SIZE, 512);
+static final int WINDOW_SIZE = 512;
+int size = 512;
 String[] ident;
 int[] matchLength;
 
 PImage fractal;
-String regex;
+String regex = "";
 
 //1 is black/white, 2 is color intensity
 int coloringMode = 1;
@@ -19,14 +19,15 @@ void setup()
 {
   size(WINDOW_SIZE, WINDOW_SIZE+100);
  
-  ident = new String[SIZE * SIZE];
-  matchLength = new int [SIZE * SIZE];
-  populate("", 0, 0, SIZE - 1, SIZE - 1, ident);
+  ident = new String[size * size];
+  matchLength = new int [size * size];
+  populate("", 0, 0, size - 1, size - 1, ident);
    
-  fractal = new PImage(SIZE, SIZE);
+  fractal = new PImage(size, size);
   fractal.filter(INVERT);
-  regex = "1";
   colorPixels(matchPixels());
+  
+  noSmooth();
   
   saved = regex;
   f = createFont("Arial", 16, true);
@@ -49,10 +50,10 @@ void draw() {
 
 void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
   if(x1 + 1 == x2 && y1 +1 == y2) {
-      id[x1 + y1 * SIZE] = soFar + "0";
-      id[x2 + y1 * SIZE] = soFar + "1";
-      id[x2 + y2 * SIZE] = soFar + "2";
-      id[x1 + y2 * SIZE] = soFar + "3";
+      id[x1 + y1 * size] = soFar + "0";
+      id[x2 + y1 * size] = soFar + "1";
+      id[x2 + y2 * size] = soFar + "2";
+      id[x1 + y2 * size] = soFar + "3";
       return;
   }
   else {
@@ -67,7 +68,7 @@ void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
 //returns the length of the regex captures
 //-1 if no match and 0 if match and no captures
 int[] matchPixels() {
-  int[] matchLength = new int[SIZE * SIZE];
+  int[] matchLength = new int[size * size];
   
   for (int i = 0; i < ident.length; i++) {
     String[] m = match(ident[i], regex);
@@ -84,7 +85,7 @@ int[] matchPixels() {
 }
 
 void colorPixels(int[] matchLength) {
-  fractal = new PImage(SIZE, SIZE);
+  fractal = new PImage(size, size);
   fractal.filter(INVERT);
   
   fractal.loadPixels();
@@ -98,6 +99,23 @@ void colorPixels(int[] matchLength) {
   }
 }
 
+void changeDepth(boolean increase) {
+  if (increase) {
+    size = min(size * 2, WINDOW_SIZE);
+  } else {
+    size = max(size / 2, 2);
+  }
+  System.out.println("ben");
+  
+  ident = new String[size * size];
+  matchLength = new int [size * size];
+  populate("", 0, 0, size - 1, size - 1, ident);
+   
+  fractal = new PImage(size, size);
+  fractal.filter(INVERT);
+  colorPixels(matchPixels());
+}
+
 void keyPressed() {
   
   if (key == '\n' ) 
@@ -109,18 +127,27 @@ void keyPressed() {
   } 
   else 
   {
-    if(key == BACKSPACE && typing.length()>0)
+    if(key == BACKSPACE)
+    
     {
-      typing = typing.substring(0,typing.length()-1);
-      
+      if (typing.length() > 0)
+      {
+        typing = typing.substring(0,typing.length()-1);
+      }
     }
     else
     {
-      if(key != BACKSPACE && key != CODED)
+      if (key != CODED)
       {
-        typing = typing + key; 
+        typing = typing + key;
+        saved="";
       }
-      saved="";
+      else if (keyCode == UP)
+      {
+        changeDepth(true);
+      } else if (keyCode == DOWN) {
+        changeDepth(false);
+      }
     }
   }
    
