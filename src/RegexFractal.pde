@@ -1,7 +1,7 @@
 //Size in pixels of the fractal window
 //Must be a power of 2
 static final int WINDOW_SIZE = 512;
-int size = 512;
+int size = 4;
 String[] ident;
 int[] matchLength;
 
@@ -67,7 +67,7 @@ void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
 //-1 if no match and 0 if match and no captures
 int[] matchPixels() {
   int[] matchLength = new int[size * size];
-  
+  populate("", 0, 0, size - 1, size - 1, ident);
   for (int i = 0; i < ident.length; i++) {
     String[] m = match(ident[i], regex);
     if (m == null) {
@@ -89,9 +89,11 @@ void colorPixels(int[] matchLength) {
   fractal.loadPixels();
   for (int i = 0; i < matchLength.length; i++) {
     if (coloringMode == 1) {
+      colorMode(RGB);
       if (matchLength[i] >= 0) {
-        colorMode(RGB);
         fractal.pixels[i] = color(0);
+      } else {
+        fractal.pixels[i] = color(255);
       }
     }
   }
