@@ -1,3 +1,5 @@
+import java.util.regex.PatternSyntaxException;
+
 //Size in pixels of the fractal window
 //Must be a power of 2
 static final int WINDOW_SIZE = 512;
@@ -23,7 +25,10 @@ void setup()
   matchLength = new int [size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
   
-  colorPixels(matchPixels());
+  matchLength = matchPixels();
+  if (matchLength != null) {
+    colorPixels(matchLength);
+  }
   
   noSmooth();
   
@@ -66,25 +71,31 @@ void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
 //returns the length of the regex captures
 //-1 if no match and 0 if match and no captures
 int[] matchPixels() {
-  int[] matchLength = new int[size * size];
+  int[] mLength = new int[size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
   for (int i = 0; i < ident.length; i++) {
-    String[] m = match(ident[i], regex);
+    String[] m;
+    try {
+      m = match(ident[i], regex);
+    } catch(PatternSyntaxException pse) {
+      println(pse.getDescription());
+      return null;
+    }
     if (m == null) {
-      matchLength[i] = -1;
+      mLength[i] = -1;
     } else {
       for (int j = 1; j < m.length; j++) {
-        matchLength[i] += m[j].length();
+        mLength[i] += m[j].length();
       }
     }
   }
   
-  return matchLength;
+  return mLength;
 }
 
 void colorPixels(int[] matchLength) {
   fractal = new PImage(size, size);
-  fractal.filter(INVERT);
+   fractal.filter(INVERT);
   
   fractal.loadPixels();
   for (int i = 0; i < matchLength.length; i++) {
@@ -111,7 +122,10 @@ void changeDepth(boolean increase) {
   matchLength = new int [size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
   
-  colorPixels(matchPixels());
+  matchLength = matchPixels();
+  if (matchLength != null) {
+    colorPixels(matchLength);
+  }
 }
 
 void keyPressed() {
@@ -120,7 +134,12 @@ void keyPressed() {
   {
     saved = typing;
     regex = saved;
-    colorPixels(matchPixels());
+    
+    matchLength = matchPixels();
+    if (matchLength != null) {
+      colorPixels(matchLength);
+    }
+    
     typing = ""; 
   } 
   else 
