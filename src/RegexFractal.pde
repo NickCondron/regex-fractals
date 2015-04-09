@@ -39,6 +39,7 @@ void setup()
 }
 
 void draw() {
+  colorMode(RGB);
   image(fractal, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
   
   fill(255, 0, 0);
