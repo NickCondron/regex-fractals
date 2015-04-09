@@ -107,6 +107,14 @@ void colorPixels(int[] matchLength) {
         fractal.pixels[i] = color(255);
       }
     }
+    else if (coloringMode == 2) {
+      colorMode(HSB);
+      if (matchLength[i] >= 0) {
+        fractal.pixels[i] = color(400,255,40*matchLength[i]);
+      } else {
+        fractal.pixels[i] = color(255);
+      }
+    }
   }
   fractal.updatePixels();
 }
