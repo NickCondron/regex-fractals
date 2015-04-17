@@ -35,13 +35,17 @@ void setup()
 
 void draw() {
   image(fractal, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
-  
+  colorMode(RGB);
   fill(255, 0, 0);
   rect(0, height - 100, width, 100);
   fill(0);
   rect(15, height-85, width-30, 70);
+  stroke(255);
+  rect(15, height-85, 22,22);
+  
     
   fill(255);
+  text(coloringMode,25,height-69); 
   text(typing, width/2, height-50); 
   text(saved, width/2, height-50);
 }
