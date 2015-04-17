@@ -96,7 +96,12 @@ int getColor(String[] m) {
     }
   }
   else if (coloringMode == 2) {
-    return 0;
+     colorMode(HSB);
+    if (m == null) {
+      return color(255);
+    } else {
+      return color(150,20+20*m[0].length(),255);
+    }
   }
   else if (coloringMode == 3) {
     colorMode(RGB);
