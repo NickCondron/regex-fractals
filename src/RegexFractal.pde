@@ -33,22 +33,22 @@ void setup()
   textFont(f);
 }
 
-void draw() {
-  image(fractal, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
-  colorMode(RGB);
-  fill(255, 0, 0);
-  rect(0, height - 100, width, 100);
-  fill(0);
-  rect(15, height-85, width-30, 70);
-  stroke(255);
-  rect(15, height-85, 22,22);
-  
-    
-  fill(255);
-  text(coloringMode,25,height-69); 
-  text(typing, width/2, height-50); 
-  text(saved, width/2, height-50);
-}
+ void draw() {
+   image(fractal, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
+   colorMode(RGB);
+   fill(255, 0, 0);
+   rect(0, height - 100, width, 100);
+   fill(0);
+   rect(15, height-85, width-30, 70);
+   stroke(255);
+   rect(15, height-85, 22,22);
+   
+     
+   fill(255);
+   text(coloringMode,25,height-69); 
+   text(typing, width/2, height-50); 
+   text(saved, width/2, height-50);
+ }
 
 void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
   if(x1 + 1 == x2 && y1 +1 == y2) {
@@ -95,8 +95,23 @@ int getColor(String[] m) {
       return color(0);
     }
   }
-  else {
+  else if (coloringMode == 2) {
     return 0;
+  }
+  else if (coloringMode == 3) {
+    colorMode(RGB);
+    if (m == null) {
+      return color(255);
+    } else {
+       int[] c = new int[3];
+       for (int i = 1; i < m.length; i++) {
+         int l = m[i].length();
+         c[i] = 255 * (1 - 1/(l+1));
+       }
+       return color(c[0], c[1], c[2]);
+    }
+  } else {
+    return color(255);
   }
 }
 
@@ -109,6 +124,22 @@ void changeDepth(boolean increase) {
   
   ident = new String[size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
+  
+  fractal = genFractal();
+}
+
+void changeMode(boolean increase) {
+  if(increase) {
+    coloringMode--;
+    if(coloringMode < 1) {
+      coloringMode = 3;
+    }
+  } else {
+    coloringMode++;
+    if(coloringMode > 3) {
+      coloringMode = 1;
+    }
+  }
   
   fractal = genFractal();
 }
@@ -147,15 +178,11 @@ void keyPressed() {
       } else if (keyCode == DOWN) {
         changeDepth(false);
       }
-        else if (keyCode == LEFT) {
-        coloringMode--;
-        if(coloringMode < 1)
-          coloringMode = 3;
+      else if (keyCode == LEFT) {
+        changeMode(false);
       }
-         else if (keyCode == RIGHT) {
-        coloringMode++;
-        if(coloringMode > 3)
-          coloringMode = 1;
+      else if (keyCode == RIGHT) {
+        changeMode(true);
       }
     }
   }
