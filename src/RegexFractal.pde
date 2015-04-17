@@ -143,6 +143,16 @@ void keyPressed() {
       } else if (keyCode == DOWN) {
         changeDepth(false);
       }
+        else if (keyCode == LEFT) {
+        coloringMode--;
+        if(coloringMode < 1)
+          coloringMode = 3;
+      }
+         else if (keyCode == RIGHT) {
+        coloringMode++;
+        if(coloringMode > 3)
+          coloringMode = 1;
+      }
     }
   }
    
