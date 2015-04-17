@@ -5,7 +5,6 @@ import java.util.regex.PatternSyntaxException;
 static final int WINDOW_SIZE = 512;
 int size = 4;
 String[] ident;
-int[] matchLength;
 
 PImage fractal;
 String regex = "0";
@@ -22,13 +21,9 @@ void setup()
   size(WINDOW_SIZE, WINDOW_SIZE+100);
  
   ident = new String[size * size];
-  matchLength = new int [size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
   
-  matchLength = matchPixels();
-  if (matchLength != null) {
-    colorPixels(matchLength);
-  }
+  fractal = genFractal();
   
   noSmooth();
   
@@ -39,7 +34,6 @@ void setup()
 }
 
 void draw() {
-  colorMode(RGB);
   image(fractal, 0, 0, WINDOW_SIZE, WINDOW_SIZE);
   
   fill(255, 0, 0);
@@ -69,55 +63,37 @@ void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
  
 }
 
-//returns the length of the regex captures
-//-1 if no match and 0 if match and no captures
-int[] matchPixels() {
-  int[] mLength = new int[size * size];
-  populate("", 0, 0, size - 1, size - 1, ident);
+PImage genFractal() {
+  PImage f = new PImage(size, size);
+  f.loadPixels();
   for (int i = 0; i < ident.length; i++) {
     String[] m;
     try {
       m = match(ident[i], regex);
     } catch(PatternSyntaxException pse) {
       println(pse.getDescription());
-      return null;
+      return fractal;
     }
-    if (m == null) {
-      mLength[i] = -1;
-    } else {
-      for (int j = 1; j < m.length; j++) {
-        mLength[i] += m[j].length();
-      }
-    }
+    
+    f.pixels[i] = getColor(m);
   }
+  f.updatePixels();
+  return f;
   
-  return mLength;
 }
 
-void colorPixels(int[] matchLength) {
-  fractal = new PImage(size, size);
-   fractal.filter(INVERT);
-  
-  fractal.loadPixels();
-  for (int i = 0; i < matchLength.length; i++) {
-    if (coloringMode == 1) {
-      colorMode(RGB);
-      if (matchLength[i] >= 0) {
-        fractal.pixels[i] = color(0);
-      } else {
-        fractal.pixels[i] = color(255);
-      }
-    }
-    else if (coloringMode == 2) {
-      colorMode(HSB);
-      if (matchLength[i] >= 0) {
-        fractal.pixels[i] = color(400,255,40*matchLength[i]);
-      } else {
-        fractal.pixels[i] = color(255);
-      }
+int getColor(String[] m) {
+  if (coloringMode == 1) {
+    colorMode(RGB);
+    if (m == null) {
+      return color(255);
+    } else {
+      return color(0);
     }
   }
-  fractal.updatePixels();
+  else {
+    return 0;
+  }
 }
 
 void changeDepth(boolean increase) {
@@ -128,13 +104,9 @@ void changeDepth(boolean increase) {
   }
   
   ident = new String[size * size];
-  matchLength = new int [size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
   
-  matchLength = matchPixels();
-  if (matchLength != null) {
-    colorPixels(matchLength);
-  }
+  fractal = genFractal();
 }
 
 void keyPressed() {
@@ -144,10 +116,7 @@ void keyPressed() {
     saved = typing;
     regex = saved;
     
-    matchLength = matchPixels();
-    if (matchLength != null) {
-      colorPixels(matchLength);
-    }
+    fractal = genFractal();
     
     typing = ""; 
   } 
