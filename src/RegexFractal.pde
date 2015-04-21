@@ -7,7 +7,7 @@ int size = 4;
 String[] ident;
 
 PImage fractal;
-String regex = "0";
+String regex = "1";
 
 //1 is black/white, 2 is color intensity
 int coloringMode = 1;
@@ -107,11 +107,12 @@ int getColor(String[] m) {
     colorMode(RGB);
     if (m == null) {
       return color(255);
+      
     } else {
        int[] c = new int[3];
        for (int i = 1; i < m.length; i++) {
          int l = m[i].length();
-         c[i] = 255 * (1 - 1/(l+1));
+         c[i - 1] = (int)(255 * (1 - (float)1/(l+1)));
        }
        return color(c[0], c[1], c[2]);
     }
@@ -184,10 +185,10 @@ void keyPressed() {
         changeDepth(false);
       }
       else if (keyCode == LEFT) {
-        changeMode(false);
+        changeMode(true);
       }
       else if (keyCode == RIGHT) {
-        changeMode(true);
+        changeMode(false);
       }
     }
   }
