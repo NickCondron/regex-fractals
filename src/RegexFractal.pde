@@ -31,6 +31,7 @@ void setup()
   
   noSmooth();
   
+  typing = regex;
   saved = regex;
   f = createFont("Arial", 16, true);
   textAlign(CENTER);
@@ -185,7 +186,9 @@ void keyPressed() {
           String timeStamp = nf(month(), 2) + nf(day(), 2) + "-" +
               nf(hour(), 2) + "." +  nf(minute(), 2) + "." + nf(second(), 2);
           fractal.save(savePath(timeStamp + ".jpg"));
-        } else { 
+        } else if (key == DELETE) {
+          typing = "";
+        }  else { 
           typing = typing + key;
           saved="";
         }
