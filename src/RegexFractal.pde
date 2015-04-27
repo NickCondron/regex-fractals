@@ -181,8 +181,14 @@ void keyPressed() {
     {
       if (key != CODED)
       {
-        typing = typing + key;
-        saved="";
+        if (key == 's' || key == 'S') {
+          String timeStamp = nf(month(), 2) + nf(day(), 2) + "-" +
+              nf(hour(), 2) + "." +  nf(minute(), 2) + "." + nf(second(), 2);
+          fractal.save(savePath(timeStamp + ".jpg"));
+        } else { 
+          typing = typing + key;
+          saved="";
+        }
       }
       else if (keyCode == UP)
       {
