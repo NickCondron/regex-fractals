@@ -129,16 +129,27 @@ int getColor(String[] m) {
 }
 
 void changeDepth(boolean increase) {
+  boolean redraw = true;
   if (increase) {
-    size = min(size * 2, WINDOW_SIZE);
+    if (size == WINDOW_SIZE) {
+      redraw = false;
+    } else {
+      size *= 2;
+    }
   } else {
-    size = max(size / 2, 2);
+    if (size == 2) {
+      redraw = false;
+    } else {
+      size /= 2;
+    }
   }
   
-  ident = new String[size * size];
-  populate("", 0, 0, size - 1, size - 1, ident);
-  
-  fractal = genFractal();
+  if (redraw) {
+    ident = new String[size * size];
+    populate("", 0, 0, size - 1, size - 1, ident);
+    
+    fractal = genFractal();
+  }
 }
 
 void changeMode(boolean increase) {
