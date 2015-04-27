@@ -6,6 +6,9 @@ static final int WINDOW_SIZE = 512;
 int size = 4;
 String[] ident;
 
+String[] savedReg;
+int regexIndex=0;
+
 PImage fractal;
 String regex = "1";
 
@@ -18,6 +21,7 @@ String saved = "";
 
 void setup()
 {
+  
   size(WINDOW_SIZE, WINDOW_SIZE+100);
  
   ident = new String[size * size];
@@ -31,6 +35,8 @@ void setup()
   f = createFont("Arial", 16, true);
   textAlign(CENTER);
   textFont(f);
+  
+  savedReg=loadStrings("regexes.txt");
 }
 
  void draw() {
@@ -47,7 +53,7 @@ void setup()
    fill(255);
    text(coloringMode,25,height-69); 
    text(typing, width/2, height-50); 
-   text(saved, width/2, height-50);
+   //text(saved, width/2, height-50);
  }
 
 void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
@@ -110,7 +116,7 @@ int getColor(String[] m) {
       
     } else {
        int[] c = new int[3];
-       for (int i = 1; i < m.length; i++) {
+       for (int i = 1; i < m.length && i <= 3; i++) {
          int l = m[i].length();
          c[i - 1] = (int)(255 * (1 - (float)1/(l+1)));
        }
@@ -159,7 +165,7 @@ void keyPressed() {
     
     fractal = genFractal();
     
-    typing = ""; 
+    //typing = ""; 
   } 
   else 
   {
@@ -190,7 +196,29 @@ void keyPressed() {
       else if (keyCode == RIGHT) {
         changeMode(false);
       }
+      else if (keyCode == 33)
+      {  
+        regexIndex++;
+        if(regexIndex>=savedReg.length)
+          regexIndex=0;
+          
+        saved = savedReg[regexIndex];
+        typing=saved;
+        regex = saved;
+        fractal = genFractal();
+          
+      }
+      else if (keyCode == 34)
+      {
+         regexIndex--;
+        if(regexIndex<0)
+          regexIndex=savedReg.length-1;
+          
+        saved = savedReg[regexIndex];
+        typing=saved;
+        regex = saved;
+        fractal = genFractal();
+      }
     }
-  }
-   
+  }  
 }
