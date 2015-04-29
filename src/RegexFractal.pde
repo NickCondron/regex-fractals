@@ -57,7 +57,9 @@ void setup()
    text(coloringMode,25,height-69); 
    text(typing, width/2, height-50); 
    //text(saved, width/2, height-50);
-   helpScreen(help);
+   if(help)
+     helpScreen(help);
+   textAlign(CENTER);
  }
 
 void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
@@ -173,7 +175,7 @@ void changeMode(boolean increase) {
 }
 
 void keyPressed() {
-  help=false;
+  //help=false;
   if (key == '\n' ) 
   {
     saved = typing;
@@ -206,7 +208,10 @@ void keyPressed() {
           typing = "";
         }  
         else if (key == 'h' || key == 'H'){
-          help=true;
+          help= !help;
+        }
+         else if (key == 'p' || key == 'P'){
+          println(regex);
         }else { 
           typing = typing + key;
           saved="";
@@ -263,11 +268,15 @@ void keyPressed() {
     text("Save the current displayed regex:",60,180);
     text("Change the depth level:",60,210);
     text("Change the color Mode:",60,240);
+    text("Close this help screen:",60,270);
     textAlign(RIGHT);
     text("Page Up/Page Down",WINDOW_SIZE-60,150);
     text("S",WINDOW_SIZE-60,180);
     text("Up/Down Arrow",WINDOW_SIZE-60,210);
     text("Left/Right Arrow",WINDOW_SIZE-60,240);
+    text("H",WINDOW_SIZE-60,270);
+    
+    
     }
    
   
