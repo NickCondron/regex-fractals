@@ -19,6 +19,8 @@ PFont f;
 String typing = "";
 String saved = "";
 
+boolean help=false;
+
 void setup()
 {
   
@@ -55,6 +57,7 @@ void setup()
    text(coloringMode,25,height-69); 
    text(typing, width/2, height-50); 
    //text(saved, width/2, height-50);
+   helpScreen(help);
  }
 
 void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
@@ -152,6 +155,7 @@ void changeDepth(boolean increase) {
   }
 }
 
+
 void changeMode(boolean increase) {
   if(increase) {
     coloringMode--;
@@ -169,7 +173,7 @@ void changeMode(boolean increase) {
 }
 
 void keyPressed() {
-  
+  help=false;
   if (key == '\n' ) 
   {
     saved = typing;
@@ -193,13 +197,17 @@ void keyPressed() {
     {
       if (key != CODED)
       {
+        
         if (key == 's' || key == 'S') {
           String timeStamp = nf(month(), 2) + nf(day(), 2) + "-" +
               nf(hour(), 2) + "." +  nf(minute(), 2) + "." + nf(second(), 2);
           fractal.save(savePath(timeStamp + ".jpg"));
         } else if (key == DELETE) {
           typing = "";
-        }  else { 
+        }  
+        else if (key == 'h' || key == 'H'){
+          help=true;
+        }else { 
           typing = typing + key;
           saved="";
         }
@@ -240,5 +248,28 @@ void keyPressed() {
         fractal = genFractal();
       }
     }
-  }  
+  }
 }
+  void helpScreen(boolean drawIt){
+    if(drawIt)
+    {
+    fill(0);
+    rect(0,0,WINDOW_SIZE,WINDOW_SIZE);
+    fill(255);
+    f = createFont("Arial", 15, true);
+    textAlign(LEFT);
+    textFont(f);
+    text("Cycle through saved regexs:",60,150);
+    text("Save the current displayed regex:",60,180);
+    text("Change the depth level:",60,210);
+    text("Change the color Mode:",60,240);
+    textAlign(RIGHT);
+    text("Page Up/Page Down",WINDOW_SIZE-60,150);
+    text("S",WINDOW_SIZE-60,180);
+    text("Up/Down Arrow",WINDOW_SIZE-60,210);
+    text("Left/Right Arrow",WINDOW_SIZE-60,240);
+    }
+   
+  
+    
+  } 
