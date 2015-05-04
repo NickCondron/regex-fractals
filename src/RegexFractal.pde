@@ -258,7 +258,7 @@ void keyPressed() {
   void helpScreen(boolean drawIt){
     if(drawIt)
     {
-    fill(0);
+   fill(0);
     rect(0,0,WINDOW_SIZE,WINDOW_SIZE);
     fill(255);
     f = createFont("Arial", 15, true);
@@ -268,13 +268,15 @@ void keyPressed() {
     text("Save the current displayed regex:",60,180);
     text("Change the depth level:",60,210);
     text("Change the color Mode:",60,240);
-    text("Close this help screen:",60,270);
+    text("Print the current regex:",60,270);
+    text("Close this help screen:",60,300);
     textAlign(RIGHT);
     text("Page Up/Page Down",WINDOW_SIZE-60,150);
     text("S",WINDOW_SIZE-60,180);
     text("Up/Down Arrow",WINDOW_SIZE-60,210);
     text("Left/Right Arrow",WINDOW_SIZE-60,240);
-    text("H",WINDOW_SIZE-60,270);
+    text("P",WINDOW_SIZE-60,270);
+    text("H",WINDOW_SIZE-60,300);
     
     
     }
