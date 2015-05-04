@@ -3,17 +3,17 @@ import java.util.regex.PatternSyntaxException;
 //Size in pixels of the fractal window
 //Must be a power of 2
 static final int WINDOW_SIZE = 512;
-int size = 4;
+int size = 512;
 String[] ident;
 
 String[] savedReg;
 int regexIndex=0;
 
 PImage fractal;
-String regex = "1";
+String regex = "(.*)1(.*)";
 
-//1 is black/white, 2 is color intensity
-int coloringMode = 1;
+//1 is black/white, 2 is depth, 3 is RGB capture
+int coloringMode = 3;
 
 PFont f;
 String typing = "";
