@@ -100,7 +100,7 @@ PImage genFractal() {
 
 int getColor(String[] m) {
   if (coloringMode == 1) {
-    colorMode(RGB);
+    colorMode(RGB, 255);
     if (m == null) {
       return color(255);
     } else {
@@ -108,7 +108,7 @@ int getColor(String[] m) {
     }
   }
   else if (coloringMode == 2) {
-     colorMode(HSB);
+     colorMode(HSB, 255);
     if (m == null) {
       return color(255);
     } else {
@@ -116,7 +116,7 @@ int getColor(String[] m) {
     }
   }
   else if (coloringMode == 3) {
-    colorMode(RGB);
+    colorMode(RGB,255);
     if (m == null) {
       return color(255);
       
@@ -128,7 +128,29 @@ int getColor(String[] m) {
        }
        return color(c[0], c[1], c[2]);
     }
-  } else {
+  } 
+    else if (coloringMode == 4) {
+    
+    if (m == null) {
+      colorMode(RGB,255);
+      return color(255);
+      
+    } 
+    else {
+      colorMode(HSB, 360,100,100);
+       int[] c = new int[3];
+       c[0]=360;
+       c[1]=100;
+       c[2]=100;
+       for (int i = 1; i < m.length && i <= 3; i++) {
+         int l = m[i].length();
+         c[i - 1] = (int)(c[i-1] * (1 - (float)1/(l+1)));
+       }
+       return color(c[0], c[1], c[2]);
+    }
+  }
+  else {
+    colorMode(RGB,255);
     return color(255);
   }
 }
@@ -162,11 +184,11 @@ void changeMode(boolean increase) {
   if(increase) {
     coloringMode--;
     if(coloringMode < 1) {
-      coloringMode = 3;
+      coloringMode = 4;
     }
   } else {
     coloringMode++;
-    if(coloringMode > 3) {
+    if(coloringMode > 4) {
       coloringMode = 1;
     }
   }
