@@ -5,25 +5,25 @@
 */
 
 //Size in pixels of the fractal window
-//Must be a power of 2
+//Must be a multiple of 2
 static final int WINDOW_SIZE = 512;
 int size = 512;
 String[] ident;
 
 String[] savedReg;
-int regexIndex=0;
+int regexIndex = 0;
 
 PImage fractal;
 String regex = "(.*)1(.*)";
 
-//1 is black/white, 2 is depth, 3 is RGB capture
+//1 is black/white, 2 is depth, 3 is RGB capture, 4 is HSB capture
 int coloringMode = 3;
 
 PFont f;
 String typing = "";
 String saved = "";
 
-boolean help=false;
+boolean help = false;
 
 void setup()
 {
@@ -43,7 +43,9 @@ void setup()
   textAlign(CENTER);
   textFont(f);
   
-  savedReg=loadStrings("regexes.txt");
+  //list of saved regexes that produce neat patterns
+  //Page up/down used to cycle through
+  savedReg = loadStrings("regexes.txt");
 }
 
  void draw() {
@@ -59,11 +61,11 @@ void setup()
      
    fill(255);
    text(coloringMode,25,height-69); 
-   text(typing, width/2, height-50); 
-   //text(saved, width/2, height-50);
-   if(help)
-     helpScreen(help);
-   textAlign(CENTER);
+   text(typing, width/2, height-50);
+   
+   if(help) {
+     helpScreen();
+   }
  }
 
 void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
@@ -80,26 +82,28 @@ void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
       populate(soFar + "2", x2-(1+x2-x1)/2+1, y2-(1+y2-y1)/2+1, x2, y2, id);
       populate(soFar + "3", x1, y2-(1+y2-y1)/2+1, x2-(1+x2-x1)/2, y2, id);  
   }
- 
 }
 
 PImage genFractal() {
   PImage f = new PImage(size, size);
   f.loadPixels();
+  
   for (int i = 0; i < ident.length; i++) {
     String[] m;
     try {
+      //m is null if no match
+      //if match index 0 is full match
+      //and captures are stored in subsequent indexes
       m = match(ident[i], regex);
     } catch(Exception e) {
       println(e.getMessage());
       return fractal;
     }
-    
     f.pixels[i] = getColor(m);
   }
+  
   f.updatePixels();
   return f;
-  
 }
 
 int getColor(String[] m) {
@@ -112,7 +116,7 @@ int getColor(String[] m) {
     }
   }
   else if (coloringMode == 2) {
-     colorMode(HSB, 255);
+    colorMode(HSB, 255);
     if (m == null) {
       return color(255);
     } else {
@@ -133,16 +137,14 @@ int getColor(String[] m) {
        return color(c[0], c[1], c[2]);
     }
   } 
-    else if (coloringMode == 4) {
-    
+  else if (coloringMode == 4) {
     if (m == null) {
       colorMode(RGB,255);
       return color(255);
       
-    } 
-    else {
+    } else {
       colorMode(HSB, 360,100,100);
-       int[] c = new int[3];
+      int[] c = new int[3];
        c[0]=360;
        c[1]=100;
        c[2]=100;
@@ -160,19 +162,13 @@ int getColor(String[] m) {
 }
 
 void changeDepth(boolean increase) {
-  boolean redraw = true;
-  if (increase) {
-    if (size == WINDOW_SIZE) {
-      redraw = false;
-    } else {
-      size *= 2;
-    }
-  } else {
-    if (size == 2) {
-      redraw = false;
-    } else {
-      size /= 2;
-    }
+  boolean redraw = false;
+  if (increase && size != WINDOW_SIZE) {
+    redraw = true;
+    size *= 2;
+  } else if (!increase && size != 2) {
+    redraw = true;
+    size /= 2;
   }
   
   if (redraw) {
@@ -201,113 +197,99 @@ void changeMode(boolean increase) {
 }
 
 void keyPressed() {
-  //help=false;
-  if (key == '\n' ) 
-  {
-    saved = typing;
-    regex = saved;
-    
-    fractal = genFractal();
-    
-    //typing = ""; 
-  } 
-  else 
-  {
-    if(key == BACKSPACE)
-    
-    {
-      if (typing.length() > 0)
-      {
-        typing = typing.substring(0,typing.length()-1);
-      }
+  
+  if (key == CODED) {
+    if (keyCode == UP) {
+      changeDepth(true);
     }
-    else
-    {
-      if (key != CODED)
-      {
+    else if (keyCode == DOWN) {
+      changeDepth(false);
+    }
+    else if (keyCode == LEFT) {
+      changeMode(true);
+    }
+    else if (keyCode == RIGHT) {
+      changeMode(false);
+    }
+    //PgUp and PgDown
+    else if (keyCode == 33)
+    { 
+      regexIndex = (regexIndex + 1) % savedReg.length;
         
-        if (key == 's' || key == 'S') {
-          String timeStamp = nf(year(), 4) + nf(month(), 2) + nf(day(), 2)
-              + "-" + nf(hour(), 2) +  nf(minute(), 2) + nf(second(), 2);
-          fractal.save(savePath(timeStamp + ".jpg"));
-          println("saved: " + timeStamp + ".jpg");
-        } else if (key == DELETE) {
-          typing = "";
-        }  
-        else if (key == 'h' || key == 'H'){
-          help= !help;
-        }
-         else if (key == 'p' || key == 'P'){
-          println(regex);
-        }else { 
-          typing = typing + key;
-          saved="";
-        }
+      saved = savedReg[regexIndex];
+      typing = saved;
+      regex = saved;
+      fractal = genFractal();
+    }
+    else if (keyCode == 34)
+    {
+      regexIndex = (regexIndex - 1) % savedReg.length;
+      if (regexIndex < 0) {
+        regexIndex += savedReg.length;
       }
-      else if (keyCode == UP)
-      {
-        changeDepth(true);
-      } else if (keyCode == DOWN) {
-        changeDepth(false);
-      }
-      else if (keyCode == LEFT) {
-        changeMode(true);
-      }
-      else if (keyCode == RIGHT) {
-        changeMode(false);
-      }
-      else if (keyCode == 33)
-      {  
-        regexIndex++;
-        if(regexIndex>=savedReg.length)
-          regexIndex=0;
-          
-        saved = savedReg[regexIndex];
-        typing=saved;
-        regex = saved;
-        fractal = genFractal();
-          
-      }
-      else if (keyCode == 34)
-      {
-         regexIndex--;
-        if(regexIndex<0)
-          regexIndex=savedReg.length-1;
-          
-        saved = savedReg[regexIndex];
-        typing=saved;
-        regex = saved;
-        fractal = genFractal();
-      }
+        
+      saved = savedReg[regexIndex];
+      typing = saved;
+      regex = saved;
+      fractal = genFractal();
+    }
+  } else {
+    if (key == '\n' ) {
+      saved = typing;
+      regex = saved;
+      
+      fractal = genFractal();
+    }
+    else if (key == BACKSPACE && typing.length() > 0) {
+      typing = typing.substring(0,typing.length()-1);
+    }
+    //save image with timestamp
+    else if (key == 's' || key == 'S') {
+      String timeStamp = nf(year(), 4) + nf(month(), 2) + nf(day(), 2)
+          + "-" + nf(hour(), 2) +  nf(minute(), 2) + nf(second(), 2);
+      
+      fractal.save(savePath(timeStamp + ".jpg"));
+      println("saved: " + timeStamp + ".jpg");
+    }
+    //clear regex
+    else if (key == DELETE) {
+      typing = "";
+    }
+    //toggle help
+    else if (key == 'h' || key == 'H'){
+      help = !help;
+    }
+    //print regex
+    else if (key == 'p' || key == 'P'){
+      println(regex);
+    }
+    //actual character is typed
+    else {
+      typing = typing + key;
+      saved="";
     }
   }
 }
-  void helpScreen(boolean drawIt){
-    if(drawIt)
-    {
-   fill(0);
-    rect(0,0,WINDOW_SIZE,WINDOW_SIZE);
-    fill(255);
-    f = createFont("Arial", 15, true);
-    textAlign(LEFT);
-    textFont(f);
-    text("Cycle through saved regexs:",60,150);
-    text("Save the current displayed regex:",60,180);
-    text("Change the depth level:",60,210);
-    text("Change the color Mode:",60,240);
-    text("Print the current regex:",60,270);
-    text("Close this help screen:",60,300);
-    textAlign(RIGHT);
-    text("Page Up/Page Down",WINDOW_SIZE-60,150);
-    text("S",WINDOW_SIZE-60,180);
-    text("Up/Down Arrow",WINDOW_SIZE-60,210);
-    text("Left/Right Arrow",WINDOW_SIZE-60,240);
-    text("P",WINDOW_SIZE-60,270);
-    text("H",WINDOW_SIZE-60,300);
-    
-    
-    }
-   
+void helpScreen() {
+  fill(0);
+  rect(0,0,WINDOW_SIZE,WINDOW_SIZE);
   
-    
-  } 
+  fill(255);
+  f = createFont("Arial", 15, true);
+  textAlign(LEFT);
+  textFont(f);
+  
+  text("Cycle through saved regexs:",60,150);
+  text("Save the current displayed regex:",60,180);
+  text("Change the depth level:",60,210);
+  text("Change the color Mode:",60,240);
+  text("Print the current regex:",60,270);
+  text("Close this help screen:",60,300);
+  textAlign(RIGHT);
+  text("Page Up/Page Down",WINDOW_SIZE-60,150);
+  text("S",WINDOW_SIZE-60,180);
+  text("Up/Down Arrow",WINDOW_SIZE-60,210);
+  text("Left/Right Arrow",WINDOW_SIZE-60,240);
+  text("P",WINDOW_SIZE-60,270);
+  text("H",WINDOW_SIZE-60,300);
+} 
