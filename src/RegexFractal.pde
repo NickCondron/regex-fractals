@@ -240,8 +240,10 @@ void keyPressed() {
       
       fractal = genFractal();
     }
-    else if (key == BACKSPACE && typing.length() > 0) {
-      typing = typing.substring(0,typing.length()-1);
+    else if (key == BACKSPACE) {
+      if (typing.length() > 0) {
+        typing = typing.substring(0,typing.length()-1);
+      }
     }
     //save image with timestamp
     else if (key == 's' || key == 'S') {
