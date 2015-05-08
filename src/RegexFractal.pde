@@ -1,4 +1,8 @@
-import java.util.regex.PatternSyntaxException;
+/* Made by Ben Switlick and Nick Condron
+ * Inspired by ssodelta and christianp
+ * Utilizes regex engine to generate repeating fractals
+ * Can change depth and has various coloring modes
+*/
 
 //Size in pixels of the fractal window
 //Must be a power of 2
@@ -86,8 +90,8 @@ PImage genFractal() {
     String[] m;
     try {
       m = match(ident[i], regex);
-    } catch(PatternSyntaxException pse) {
-      println(pse.getDescription());
+    } catch(Exception e) {
+      println(e.getMessage());
       return fractal;
     }
     
