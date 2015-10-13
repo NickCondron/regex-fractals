@@ -25,10 +25,12 @@ String saved = "";
 
 boolean help = false;
 
+void settings() {
+  size(WINDOW_SIZE, WINDOW_SIZE + 100);
+}
+
 void setup()
 {
-  
-  size(WINDOW_SIZE, WINDOW_SIZE+100);
  
   ident = new String[size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
