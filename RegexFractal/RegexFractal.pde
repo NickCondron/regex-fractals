@@ -29,9 +29,7 @@ void settings() {
   size(WINDOW_SIZE, WINDOW_SIZE + 100);
 }
 
-void setup()
-{
- 
+void setup() {
   ident = new String[size * size];
   populate("", 0, 0, size - 1, size - 1, ident);
   
@@ -70,6 +68,7 @@ void setup()
    }
  }
 
+//recursivey fills the id for each pixel
 void populate(String soFar, int x1, int y1, int x2, int y2, String[] id) {
   if(x1 + 1 == x2 && y1 +1 == y2) {
       id[x1 + y1 * size] = soFar + "0";
@@ -93,11 +92,10 @@ PImage genFractal() {
   for (int i = 0; i < ident.length; i++) {
     String[] m;
     try {
-      //m is null if no match
-      //if match index 0 is full match
-      //and captures are stored in subsequent indexes
+      //catches user error for invalid regex syntax
       m = match(ident[i], regex);
     } catch(Exception e) {
+      //prints syntax eror and returns unchanged fractal
       println(e.getMessage());
       return fractal;
     }
@@ -182,40 +180,38 @@ void changeDepth(boolean increase) {
 }
 
 
-void changeMode(boolean increase) {
-  if(increase) {
-    coloringMode--;
-    if(coloringMode < 1) {
-      coloringMode = 4;
-    }
-  } else {
-    coloringMode++;
-    if(coloringMode > 4) {
-      coloringMode = 1;
-    }
+void changeMode(int change) {
+  coloringMode += change;
+  while(coloringMode < 1) {
+    coloringMode += 4;
   }
-  
+  while(coloringMode > 4) {
+    coloringMode -= 4;
+  }
   fractal = genFractal();
 }
 
 void keyPressed() {
-  
+  //CODED keys
   if (key == CODED) {
     if (keyCode == UP) {
+      //increase depth by 1
       changeDepth(true);
     }
     else if (keyCode == DOWN) {
+      //decrease depth by 1
       changeDepth(false);
     }
     else if (keyCode == LEFT) {
-      changeMode(true);
+      //decrease coloringMode by 1
+      changeMode(-1);
     }
     else if (keyCode == RIGHT) {
-      changeMode(false);
+      //increase coloringMode by 1
+      changeMode(1);
     }
-    //PgUp and PgDown
-    else if (keyCode == 33)
-    { 
+    //PgUp key
+    else if (keyCode == 33) { 
       regexIndex = (regexIndex + 1) % savedReg.length;
         
       saved = savedReg[regexIndex];
@@ -223,8 +219,8 @@ void keyPressed() {
       regex = saved;
       fractal = genFractal();
     }
-    else if (keyCode == 34)
-    {
+    //PgDown key
+    else if (keyCode == 34) {
       regexIndex = (regexIndex - 1) % savedReg.length;
       if (regexIndex < 0) {
         regexIndex += savedReg.length;
@@ -235,7 +231,9 @@ void keyPressed() {
       regex = saved;
       fractal = genFractal();
     }
-  } else {
+  }
+  //non-CODED keys
+  else {
     if (key == '\n' ) {
       saved = typing;
       regex = saved;
@@ -274,6 +272,8 @@ void keyPressed() {
     }
   }
 }
+
+//displays helpscreen over the regex
 void helpScreen() {
   fill(0);
   rect(0,0,WINDOW_SIZE,WINDOW_SIZE);
