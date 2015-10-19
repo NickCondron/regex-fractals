@@ -27,6 +27,7 @@ boolean help = false;
 
 void settings() {
   size(WINDOW_SIZE, WINDOW_SIZE + 100);
+  noSmooth();
 }
 
 void setup() {
@@ -34,8 +35,6 @@ void setup() {
   populate("", 0, 0, size - 1, size - 1, ident);
   
   fractal = genFractal();
-  
-  noSmooth();
   
   typing = regex;
   saved = regex;
@@ -144,15 +143,13 @@ int getColor(String[] m) {
       
     } else {
       colorMode(HSB, 360,100,100);
-      int[] c = new int[3];
-       c[0]=360;
-       c[1]=100;
-       c[2]=100;
-       for (int i = 1; i < m.length && i <= 3; i++) {
-         int l = m[i].length();
-         c[i - 1] = (int)(c[i-1] * (1 - (float)1/(l+1)));
-       }
-       return color(c[0], c[1], c[2]);
+      int[] c = {360, 100, 100};
+      
+      for (int i = 1; i < m.length && i <= 3; i++) {
+        int l = m[i].length();
+        c[i - 1] = (int)(c[i-1] * (1 - (float)1/(l+1)));
+      }
+      return color(c[0], c[1], c[2]);
     }
   }
   else {
