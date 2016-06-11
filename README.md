@@ -1,6 +1,6 @@
 # Regex-Fractals
 
-Generate fractals from regular expressions. Uses regex capture to determine colors in various modes. Can change depth of the fractal and cycle through various coloring modes. Implemented in [processing](processing.org)
+Generate fractals from regular expressions. Uses regex capture to determine colors in various modes. Can change depth of the fractal and cycle through various coloring modes. Implemented in [processing](http://processing.org/)
 
 ## How it Works
 
