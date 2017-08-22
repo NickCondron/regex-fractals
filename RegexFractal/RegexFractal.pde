@@ -38,9 +38,6 @@ void setup() {
   
   typing = regex;
   saved = regex;
-  f = createFont("Arial", 16, true);
-  textAlign(CENTER);
-  textFont(f);
   
   //list of saved regexes that produce neat patterns
   //Page up/down used to cycle through
@@ -59,6 +56,9 @@ void setup() {
    
      
    fill(255);
+   f = createFont("Arial", 16, true);
+   textAlign(CENTER);
+   textFont(f);
    text(coloringMode,25,height-69); 
    text(typing, width/2, height-50);
    
